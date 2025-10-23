@@ -4,7 +4,7 @@ Base Topological Encoder Classes
 from abc import abstractmethod, ABCMeta
 from typing import TypeVar, Tuple, Dict, List, Generic, Optional, Type, Any
 from qiskit import QuantumRegister, QuantumCircuit, ClassicalRegister
-from qiskit.circuit.quantumregister import Qubit
+from qiskit.circuit import Qubit
 
 from qtcodes.common.constants import DH, DW
 

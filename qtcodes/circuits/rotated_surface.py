@@ -499,10 +499,16 @@ class RotatedQubit(TopologicalQubit[TQubit], metaclass=ABCMeta):
         """
         num_syn = self.lattice.params["num_syn"]
         self.lattice.params["T"] += 1
+        # syndrome_readouts = ClassicalRegister(
+        #     num_syn[self.lattice.SYNX] + num_syn[self.lattice.SYNZ],
+        #     name=self.name + "_c{}".format(self.lattice.params["T"]),
+        # )
+        safe_name = "".join(c if c.isalnum() or c == "_" else "_" for c in self.name)
         syndrome_readouts = ClassicalRegister(
             num_syn[self.lattice.SYNX] + num_syn[self.lattice.SYNZ],
-            name=self.name + "_c{}".format(self.lattice.params["T"]),
+            name=f"{safe_name}_c{self.lattice.params['T']}",
         )
+
         self.lattice.cregisters[
             "syndrome{}".format(self.lattice.params["T"])
         ] = syndrome_readouts

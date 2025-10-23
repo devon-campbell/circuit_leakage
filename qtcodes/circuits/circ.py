@@ -3,7 +3,7 @@ Topological Circuit and Register
 """
 from typing import Union, Dict, cast, Optional, Any, Tuple, List, Type
 from qiskit import QuantumCircuit, QuantumRegister
-from qiskit.circuit.classicalregister import ClassicalRegister
+from qiskit.circuit import ClassicalRegister
 from qtcodes.circuits.base import TopologicalQubit
 from qtcodes.common.constants import *
 from qtcodes.circuits.qubit_types import str2qtype

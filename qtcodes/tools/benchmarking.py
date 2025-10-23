@@ -8,7 +8,7 @@ import glob
 
 import numpy as np
 import matplotlib.pyplot as plt
-from qiskit import transpile, QuantumCircuit, assemble
+from qiskit import transpile, QuantumCircuit
 from qiskit_aer import Aer
 from tqdm import tqdm
 
@@ -97,19 +97,33 @@ class TopologicalBenchmark:
         pbar = tqdm(physical_error_rates)
         for physical_error_rate in pbar:
             # Transpile the circuit
-            transpiled_circ = transpile(
-                self.circ,
-                basis_gates=['u1', 'u2', 'u3', 'cx'],  # Add or modify basis gates as needed
-                optimization_level=0
-            )
-            # Assemble the circuit
-            qobj = assemble(
-                transpiled_circ,
-                shots=shots
-            )
-            # Simulate the circuit
+            # transpiled_circ = transpile(
+            #     self.circ,
+            #     basis_gates=['u1', 'u2', 'u3', 'cx'],  # Add or modify basis gates as needed
+            #     optimization_level=0
+            # )
+            # # Assemble the circuit
+            # qobj = assemble(
+            #     transpiled_circ,
+            #     shots=shots
+            # )
+            # # Simulate the circuit
+            # simulator = Aer.get_backend("aer_simulator")
+            # results = simulator.run(qobj, noise_model=self.noise_model_func(physical_error_rate)).result().get_counts(
+            
+            # Pick a backend and transpile for it
             simulator = Aer.get_backend("aer_simulator")
-            results = simulator.run(qobj, noise_model=self.noise_model_func(physical_error_rate)).result().get_counts()
+            transpiled_circ = transpile(self.circ, backend=simulator, optimization_level=0)
+
+            # Run directly on the backend (assemble is deprecated)
+            result = simulator.run(
+                transpiled_circ,
+                shots=shots,
+                noise_model=self.noise_model_func(physical_error_rate)
+            ).result()
+
+            results = result.get_counts()
+
             logical_error_rate_value = self.logical_error_rate(
                 results, err_prob=physical_error_rate if deg_weight else None
             )
@@ -178,19 +192,33 @@ class TopologicalBenchmark:
 
         """
         # Transpile the circuit
-        transpiled_circ = transpile(
-            self.circ,
-            basis_gates=['u1', 'u2', 'u3', 'cx'],  # Add or modify basis gates as needed
-            optimization_level=0
-        )
-        # Assemble the circuit
-        qobj = assemble(
-            transpiled_circ,
-            shots=shots
-        )
-        # Simulate the circuit
+        # transpiled_circ = transpile(
+        #     self.circ,
+        #     basis_gates=['u1', 'u2', 'u3', 'cx'],  # Add or modify basis gates as needed
+        #     optimization_level=0
+        # )
+        # # Assemble the circuit
+        # qobj = assemble(
+        #     transpiled_circ,
+        #     shots=shots
+        # )
+        # # Simulate the circuit
+        # simulator = Aer.get_backend("aer_simulator")
+        # results = simulator.run(qobj, noise_model=self.noise_model_func(physical_error_rate)).result().get_counts()
+
+        # Pick a backend and transpile for it
         simulator = Aer.get_backend("aer_simulator")
-        results = simulator.run(qobj, noise_model=self.noise_model_func(physical_error_rate)).result().get_counts()
+        transpiled_circ = transpile(self.circ, backend=simulator, optimization_level=0)
+
+        # Run directly on the backend (assemble is deprecated)
+        result = simulator.run(
+            transpiled_circ,
+            shots=shots,
+            noise_model=self.noise_model_func(physical_error_rate)
+        ).result()
+
+        results = result.get_counts()
+
         logical_error_rate_value = self.logical_error_rate(
             results, err_prob=physical_error_rate
         )
