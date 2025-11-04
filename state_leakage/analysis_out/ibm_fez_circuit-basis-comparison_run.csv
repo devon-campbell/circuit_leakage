@@ -1,0 +1,9 @@
+circuit_basis,accuracy
+Y_X,0.268
+idle_Z,0.243
+X_X,0.332
+Y_Z,0.252
+Z_Z,0.358
+Z_X,0.275
+X_Z,0.284
+idle_X,0.235
